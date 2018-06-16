@@ -1,0 +1,59 @@
+{% extends 'blog/base.html' %}
+
+{% block content %}
+
+    <div class="post_detale">
+        {% if post.published_date %}
+            <div class="post_data">
+                {{ post.published_date }}
+            </div>
+        {% endif %}
+        <h1>{{ post.title }}</h1>
+        <h3>Treść: </h3>
+        <p>{{ post.text|linebreaksbr }}</p>
+
+          {% if post.photo %}
+                 <p><img src="{{ post.photo.url}}" height="150"/></p>
+                    {% endif %}
+        <footer>Time: {{post.created_date|timesince}} ago</footer>
+        <hr>
+        <h1>Komentarze: </h1>
+        <a class="btn btn-default" href="{% url 'add_comment_to_post' pk=post.pk id_blogu=id %}">Dodaj komentarz</a>
+
+        {%if comments %}
+        {% for comment in comments %}
+        {% if comment.is_parent%}
+        <hr/>
+        <blockquote>
+        <p style="font-size:18px;">Treść: {{comment.text|linebreaksbr}}</a>
+        <br>time: {{comment.created_date|timesince}} ago
+        <br>author: {{comment.author}}
+        </p>
+
+        <blockquote>
+        <p>Odpowiedzi:</p>
+
+        {% for com in comment.children %}
+            <footer style="color:orange;">
+        <p style="font-size:12px;">treść: {{com.text|linebreaksbr}}
+            <br>
+
+            <br> author: {{com.author}}
+            <br>time: {{com.created_date|timesince}} ago</footer>
+        </p>
+
+        {%endfor%}
+            {% if not comment.children %}
+            <p style="font-size:12px;">Brak komentarzy :(</p>
+            {% endif %}
+        </blockquote>
+        <p><a class="btn btn-default" href="{% url 'add_comment_to_comment' com_id=comment.id pk=post.pk id_blogu=id %}">
+            Odpowiedz</a></p>
+        <hr/>
+            </blockquote>
+        {%endif%}
+        {% endfor %}
+        {%else%}
+        <p style="font-size:16px;">Brak komentarzy :(</p>
+        {%endif%}
+{% endblock %}

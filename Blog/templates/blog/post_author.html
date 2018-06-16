@@ -1,0 +1,18 @@
+{% extends 'blog/base.html' %}
+
+{% block content %}
+ <form>
+    <div style="border-style:groove; background-color:#557A95; border-radius:15px; " class="author">
+
+           <center> <h1>Author </h1></center>
+           <label style="font-size:24px;margin:5px;">Imie:</label>
+        <p style="font-size:16px;margin:5px;">{{ author.user.username }}</p>
+          {% if author.photo %}
+                 <p style="margin:5px;"><img src="{{ author.photo.url}}" height="150"/></p>
+                    {% endif %}
+        <label style="font-size:24px;margin:5px;">Biografia:</label>
+        <p style="font-size:16px;margin:5px;">{{author.biography}}</p>
+
+    </div>
+</form>
+{% endblock %}

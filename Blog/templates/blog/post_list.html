@@ -1,0 +1,73 @@
+{% load staticfiles %}
+<html>
+    <head>
+        <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+        <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">
+        <link rel="stylesheet" href="{% static 'css/blog.css' %}">
+        <title>Blog</title>
+    </head>
+    <body>
+        <div class="okno_blogi">
+
+            <h1><a href="{% url 'post_list' pk=pk %}">Blog: {{blog_id.title}}</a></h1>
+            <input type=button value="Poprzednia strona" onClick="javascript:history.go(-1);">
+            {% if user.is_authenticated %}
+             <div class="uzytkownik">Witaj,{{request.user.username}}</div>
+            {% for prof in profile %}
+            {% if prof.user == request.user %}
+            {% if prof.photo %}
+            <div class="wyloguj"><img height="100" src="{{prof.photo.url}}"/> </div>
+            {% endif %}
+            {% endif %}
+            {% endfor %}
+            {% endif %}
+        </div>
+        <div class="menu">
+        <div class="home" onclick="location.href='{% url 'Blogi' %}'"> <button >home</button></div>
+       {% if user.is_authenticated %}
+        <div class="wyloguj" onclick="location.href='{% url 'logout' %}'"> <button >Wyloguj</button></div>
+        <div class="nowy_post" onclick="location.href='{% url 'post_new' pk=pk %}'"><button>Nowy Post</button></div>
+        <div class="rejestracja" onclick="location.href='{% url 'edit'%}'" ><button>Edytuj Konto</button></div>
+       {%else%}
+        <div class="rejestracja" onclick="location.href='{% url 'register' %}'"> <button >Rejestracja</button></div>
+        <div class="logowanie" onclick="location.href='{% url 'login' %}'"> <button >Logowanie</button></div>
+       {% endif %}
+
+        </div>
+
+        <div class="Posty">
+
+{% if messages %}
+  <ul class="messages">
+    {% for message in messages %}
+      <li class="{{ message.tags }}">
+        {{ message|safe }}
+      </li>
+    {% endfor %}
+  </ul>
+  {% endif %}
+                {% for post in posts %}
+                {% if post.blog == blog_id %}
+                <div>
+                    {% if request.user == post.author %}
+                <a class="btn btn-default" href="{% url 'post_edit' pk=post.pk id_blogu=pk %}"><span class="glyphicon glyphicon-pencil"></span></a>
+                 {% endif %}
+
+                    <h1><a href="{% url 'post_detail' pk=post.pk id_blogu=pk%}">{{ post.title }}</a></h1>
+                 <p>{{ post.text|linebreaksbr |truncatewords:50 }}</p>
+                   <footer><p>Author: <a style="color:black;" href="{% url 'post_author' pk=post.author.pk id_blogu=pk%}">
+                       {{ post.author|linebreaksbr }}</a></p>
+                    </footer>
+
+                    <hr/>
+                </div>
+                {% endif %}
+                {% endfor %}
+        </div>
+
+
+
+
+    </body>
+</html>
+STATIC_URL = '/static/'

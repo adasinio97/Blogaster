@@ -1,0 +1,66 @@
+{% load staticfiles %}
+<html>
+    <head>
+        <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+        <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">
+        <link rel="stylesheet" href="{% static 'css/blog.css' %}">
+        <title>Blog</title>
+    </head>
+    <body>
+        <div class="okno_blogi">
+
+            <h1><a href="/">Strona z Blogami</a></h1>
+            {% if user.is_authenticated %}
+             <div class="uzytkownik">Witaj,{{request.user.username}}</div>
+            {% for prof in profile %}
+            {% if prof.user == request.user %}
+            {% if prof.photo %}
+            <div class="wyloguj"><img height="100" src="{{prof.photo.url}}"/> </div>
+            {% endif %}
+            {% endif %}
+            {% endfor %}
+            {% endif %}
+        </div>
+        <div class="menu">
+
+       {% if user.is_authenticated %}
+        <div class="wyloguj" onclick="location.href='{% url 'logout' %}'"> <button >Wyloguj</button></div>
+        <div class="home" onclick="location.href='{% url 'blog_new' %}'"><button>Nowy Blog</button></div>
+        <div class="rejestracja" onclick="location.href='{% url 'edit'%}'" ><button>Edytuj Konto</button></div>
+       {%else%}
+        <div class="rejestracja" onclick="location.href='{% url 'register' %}'"> <button >Rejestracja</button></div>
+        <div class="logowanie" onclick="location.href='{% url 'login' %}'"> <button >Logowanie</button></div>
+       {% endif %}
+
+        </div>
+
+        <div class="Posty">
+
+{% if messages %}
+  <ul class="messages">
+    {% for message in messages %}
+      <li class="{{ message.tags }}">
+        {{ message|safe }}
+      </li>
+    {% endfor %}
+  </ul>
+  {% endif %}
+                {% for blog in blogs %}
+                <div>
+
+                 <h1><a href="{% url 'post_list' pk=blog.pk%}">{{ blog.title }}</a></h1>
+                    <div class="post_data">
+                    <p>published: {{ blog.created_date }}</p>
+                        <p>author: {{ blog.author }}</p>
+                </div>
+                    <hr/>
+                </div>
+                {% endfor %}
+        </div>
+
+
+
+
+    </body>
+</html>
+STATIC_URL = '/static/'

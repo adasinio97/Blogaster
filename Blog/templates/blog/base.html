@@ -1,0 +1,59 @@
+{% load staticfiles %}
+<html>
+    <head>
+        <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+        <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">
+        <link rel="stylesheet" href="{% static 'css/blog.css' %}">
+        <title>Blog</title>
+    </head>
+    <body>
+        <div class="okno_blogi">
+            <h1><a href="{% url 'post_list' pk=blog.pk %}">Blog: {{ blog.title}}</a></h1>
+            <input type=button value="Poprzednia strona" onClick="javascript:history.go(-1);">
+            {% if user.is_authenticated %}
+             <div class="uzytkownik">Witaj,{{request.user.username}}</div>
+            {% for prof in profile %}
+            {% if prof.user == request.user %}
+            {% if prof.photo %}
+            <div class="wyloguj"><img height="100" src="{{prof.photo.url}}"/> </div>
+            {% endif %}
+            {% endif %}
+            {% endfor %}
+            {% endif %}
+        </div>
+        <div class="menu">
+        <div class="home" onclick="location.href='{% url 'Blogi' %}'"> <button >home</button></div>
+       {% if user.is_authenticated %}
+        <div class="wyloguj" onclick="location.href='{% url 'logout' %}'"> <button >Wyloguj</button></div>
+        <div class="nowy_post" onclick="location.href='{% url 'post_new' pk=blog.pk %}'"><button>Nowy Post</button></div>
+        <div class="rejestracja" onclick="location.href='{% url 'edit'%}'" ><button>Edytuj Konto</button></div>
+       {%else%}
+        <div class="rejestracja" onclick="location.href='{% url 'register' %}'"> <button >Rejestracja</button></div>
+        <div class="logowanie" onclick="location.href='{% url 'login' %}'"> <button >Logowanie</button></div>
+       {% endif %}
+
+
+        </div>
+    <div class="Menu_contener">
+        {% if messages %}
+  <ul class="messages">
+    {% for message in messages %}
+      <li class="{{ message.tags }}">
+        {{ message|safe }}
+      </li>
+    {% endfor %}
+  </ul>
+  {% endif %}
+        <div class="row">
+            <div class="col-md-8">
+            {% block content %}
+            {% endblock %}
+            </div>
+        </div>
+    </div>
+
+
+
+
+    </body>
+</html>
